@@ -8,7 +8,7 @@
 #include <openssl/opensslconf.h>
 #include <openssl/obj_mac.h>
 #include <openssl/err.h>
-#include <string.h>
+#include <stdio.h>
 #include "sm2.h"
 
 int GenEcPairKey(char **out_priKey, char **out_pubKey)
@@ -127,6 +127,65 @@ bool CreateEVP_PKEY(unsigned char *key, int is_public, EVP_PKEY **out_pKey) {
 
     BIO_free(keybio);
     return true;
+}
+
+int Sign(char *in_buf, int in_buflen, char **out_sig, int *len_sig, char *priKey) {
+    int ret_val = 0;
+    EC_KEY *eckey = NULL;
+    BIO *keybio = NULL;
+    keybio = BIO_new_mem_buf(priKey, -1);
+    if (keybio == NULL) {
+        printf("BIO_new_mem_buf failed.\n");
+        return -1;
+    }
+    eckey = PEM_read_bio_ECPrivateKey(keybio, NULL, NULL, NULL);
+    if (eckey == NULL) {
+
+        printf("PEM_read_bio_ECPrivateKey failed.\n");
+        BIO_free(keybio);
+        return -2;
+    }
+
+    unsigned char szSign[256] = {0};
+    if (1 != ECDSA_sign(0, (const unsigned char *)in_buf,
+                        in_buflen, szSign, (unsigned int *)len_sig, eckey)) {
+        printf("ECDSA_sign failed.\n");
+        ret_val = -3;
+    } else {
+        *out_sig = (char *)malloc(sizeof(char) * (*len_sig));
+        memcpy(*out_sig, szSign, sizeof(char) * (*len_sig));
+        ret_val = 0;
+    }
+    BIO_free(keybio);
+    EC_KEY_free(eckey);
+    return ret_val;
+}
+
+int Verify(char *in_buf, int buflen, char *sig, int siglen, char *pubkey) {
+    int ret_val = 0;
+    EC_KEY *eckey = NULL;
+    BIO *keybio = NULL;
+    keybio = BIO_new_mem_buf(pubkey, -1);
+    if (keybio == NULL) {
+        printf("BIO_new_mem_buf failed.\n");
+        return -1;
+    }
+    eckey = PEM_read_bio_EC_PUBKEY(keybio, NULL, NULL, NULL);
+    if (eckey == NULL) {
+        printf("PEM_read_bio_EC_PUBKEY failed.\n");
+        BIO_free(keybio);
+        return -2;
+    }
+    if (1 != ECDSA_verify(0, (const unsigned char *)in_buf, buflen, (const unsigned char *)sig, siglen, eckey)) {
+        printf("ECDSA_verify failed.\n");
+        ret_val = -3;
+    } else {
+        ret_val = 0;
+    }
+    BIO_free(keybio);
+    EC_KEY_free(eckey);
+
+    return ret_val;
 }
 
 int Encrypt(char *in_buf, int in_buflen, char **out_encrypted, int *len_encrypted, char *pubKey) {

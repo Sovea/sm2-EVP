@@ -160,7 +160,7 @@ int SM2::Sign(string in_buf, int in_buflen, string &out_sig, int &len_sig, strin
     return ret_val;
 }
 
-int SM2::Verify(string in_buf, const int buflen, string sig, const int siglen, string pubkey, const int keylen) {
+int SM2::Verify(string in_buf, const int buflen, string sig, const int siglen, string pubkey) {
     int ret_val = 0;
     EC_KEY *eckey = NULL;
     BIO *keybio = NULL;

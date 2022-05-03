@@ -45,6 +45,13 @@ int main() {
     Decrypt(test_encryptedText, test_encryptedText_len, &test_decryptedText, &test_decryptedText_len, priKey);
     printf("Decrypted Data: \n %s \n", test_decryptedText);
 
+    // test Sign & Verify
+    char *test_sig;
+    int test_sig_len;
+    Sign(test_plainText, strlen(test_plainText), &test_sig, &test_sig_len, priKey);
+    printf("Signed Text: \n %s \n", test_sig);
+    int verifyResult = Verify(test_plainText, strlen(test_plainText), test_sig, test_sig_len, pubKey);
+    printf("Verify Result: \n %d \n", verifyResult);
     return 0;
 }
 

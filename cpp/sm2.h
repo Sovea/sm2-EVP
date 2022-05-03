@@ -58,10 +58,9 @@ public:
     // @param: sig -> signed data
     // @param: siglen -> length of the signed data
     // @param: pubkey
-    // @param: keylen -> length of the pubkey
     // @ret: result code
     //
-    static int Verify(string in_buf, const int buflen, string sig, const int siglen, string pubkey, const int keylen);
+    static int Verify(string in_buf, const int buflen, string sig, const int siglen, string pubkey);
 
     //
     // @brief: Encrypt data with SM2 pubkey

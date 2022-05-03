@@ -37,6 +37,28 @@ bool PriKey2PubKey(char *in_priKey, char **out_pubKey);
 int GenEcPairKey(char **out_priKey, char **out_pubKey);
 
 //
+// @brief: Sign data with SM2 priKey
+// @param: in_buf -> the data to be signed
+// @param: in_buflen -> length of the target data
+// @param: out_sig -> signed data
+// @param: len_sig -> length of the signed data
+// @param: priKey
+// @ret: result code
+//
+int Sign(char *in_buf, int in_buflen, char **out_sig, int *len_sig, char *priKey);
+
+//
+// @brief: Verify signed data with SM2 pubkey
+// @param: in_buf -> the data to be verified
+// @param: in_buflen -> length of the target data
+// @param: sig -> signed data
+// @param: siglen -> length of the signed data
+// @param: pubkey
+// @ret: result code
+//
+int Verify(char *in_buf, int buflen, char *sig, int siglen, char *pubkey);
+
+//
 // @brief: Encrypt data with SM2 pubkey
 // @param: in_buf -> the data to be encrypted
 // @param: in_buflen -> length of the target data

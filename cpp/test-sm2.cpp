@@ -57,10 +57,10 @@ int main() {
     // test Sign & Verify
     string test_sig;
     int test_sig_len;
-    sm2Handler.Sign(test_plainText, test_plainText.length(),test_sig, test_sig_len, priKey);
+    sm2Handler.Sign(test_plainText, test_plainText.length(), test_sig, test_sig_len, priKey);
     cout << "Signed Text: \n" << test_sig << endl;
     int verifyResult = sm2Handler.Verify(test_plainText, test_plainText.length(), test_sig,
-        test_sig_len, pubKey, pubKey.length());
+        test_sig_len, pubKey);
     cout << "Verify Result: " << verifyResult << endl;
     return 0;
 }
